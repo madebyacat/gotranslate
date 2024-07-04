@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: gotranslateposgres
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: gotranslate
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+volumes:
+  pgdata:
