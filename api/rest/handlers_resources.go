@@ -7,7 +7,6 @@ import (
 	"gotranslate/core/contracts"
 	"gotranslate/models"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,7 +41,6 @@ func AddResources(repo contracts.ResoureRepository) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		resources, err := parseResourcesFromRequest(ctx)
 		if err != nil {
-			log.Println(err)
 			badRequest(ctx, "invalid request")
 			return
 		}

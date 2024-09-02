@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"gotranslate/core/contracts"
 	"gotranslate/models"
-	"log"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -35,7 +34,6 @@ func (repo *ResourceSql) Init() error {
 
 	_, err := repo.Pool.Exec(context.Background(), createTableQuery)
 	if err != nil {
-		log.Printf("Failed to create table: %v\n", err)
 		return err
 	}
 	return nil

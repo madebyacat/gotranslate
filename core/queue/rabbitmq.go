@@ -69,18 +69,26 @@ func (r *RabbitMQ) Consume(handlersMap map[string]contracts.MessageHandler) erro
 			typeValue, exists := data["Type"]
 			if !exists {
 				log.Println("error parsing message, no Type found")
+				return
 			}
 
 			messageType, ok := typeValue.(string)
 			if !ok {
 				log.Println("unable to read Type of message")
+				return
 			}
 
 			handler, found := handlersMap[messageType]
 			if !found {
 				log.Printf("message of type %v can't be handled, make sure it's registered", messageType)
+				return
 			}
-			handler.HandleMessage(data)
+
+			err = handler.HandleMessage(data)
+			if err != nil {
+				log.Printf("error handling message: %v", err)
+				return
+			}
 		}
 	}()
 

@@ -7,7 +7,6 @@ import (
 	"gotranslate/batching"
 	"gotranslate/core/contracts"
 	"gotranslate/models"
-	"log"
 )
 
 type TranslateLanguageMessage struct {
@@ -48,13 +47,12 @@ func (h *TranslateLanguageHandler) HandleMessage(messageBody map[string]interfac
 
 func ConsumeTranslation(msg *TranslateLanguageMessage, repo contracts.ResoureRepository, translator contracts.Translator) error {
 	if msg.SourceLanguage == "" || msg.TargetLanguage == "" {
-		log.Printf("error processing message %v\n", msg)
 		return errors.New("languages not set correctly")
 	}
 
 	existingResources, err := repo.GetResourcesByLanguageCode(msg.SourceLanguage)
 	if err != nil {
-		log.Printf("error loading resources %v\n", err.Error())
+		return err
 	}
 
 	if len(existingResources) == 0 {
