@@ -22,7 +22,7 @@ func TestConsumeTranslation_ShouldSaveTranslatedResourcesToDb(t *testing.T) {
 		{Key: "key3", LanguageCode: "en", Text: "text 6"},
 	}
 	msg := TranslateLanguageMessage{Type: "testType", SourceLanguage: "en", TargetLanguage: expectedLanguage}
-	translator := translators.FakeTranslator{}
+	translator := translators.Fake{}
 	db, teardown := testutils.SpinUpContainer(t)
 	defer teardown()
 	repo := repository.NewResourceGorm(db)

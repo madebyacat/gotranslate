@@ -128,9 +128,9 @@ func initializeTranslationService() contracts.Translator {
 			log.Fatal(err)
 		}
 
-		return translators.NewGoogleTranslator(client)
+		return translators.NewGoogle(client)
 	} else if service == "fake" {
-		return &translators.FakeTranslator{}
+		return &translators.Fake{}
 	} else {
 		log.Fatal(errors.New("unsupported translation service"))
 	}

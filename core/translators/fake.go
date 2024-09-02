@@ -7,12 +7,12 @@ import (
 	"github.com/brianvoe/gofakeit/v6"
 )
 
-type FakeTranslator struct {
+type Fake struct {
 }
 
-var _ contracts.Translator = (*FakeTranslator)(nil)
+var _ contracts.Translator = (*Fake)(nil)
 
-func (f *FakeTranslator) Translate(tq models.TranslationQuery) (results []string, err error) {
+func (f *Fake) Translate(tq models.TranslationQuery) (results []string, err error) {
 	gofakeit.Seed(0)
 	for range tq.Q {
 		results = append(results, gofakeit.ProductName())
@@ -21,7 +21,7 @@ func (f *FakeTranslator) Translate(tq models.TranslationQuery) (results []string
 	return results, nil
 }
 
-func (f *FakeTranslator) TranslateResources(targetLanguageCode string, resources []models.Resource) ([]models.Resource, error) {
+func (f *Fake) TranslateResources(targetLanguageCode string, resources []models.Resource) ([]models.Resource, error) {
 	results := []models.Resource{}
 	gofakeit.Seed(0)
 	for _, r := range resources {
@@ -36,6 +36,6 @@ func (f *FakeTranslator) TranslateResources(targetLanguageCode string, resources
 	return results, nil
 }
 
-func (f *FakeTranslator) GetBatchLimit() int {
+func (f *Fake) GetBatchLimit() int {
 	return 5
 }

@@ -10,21 +10,21 @@ import (
 	"golang.org/x/text/language"
 )
 
-type GoogleTranslator struct {
+type Google struct {
 	Client TranslateClient
 }
 
-var _ contracts.Translator = (*GoogleTranslator)(nil)
+var _ contracts.Translator = (*Google)(nil)
 
 type TranslateClient interface {
 	Translate(ctx context.Context, inputs []string, target language.Tag, opts *translate.Options) ([]translate.Translation, error)
 }
 
-func NewGoogleTranslator(client TranslateClient) contracts.Translator {
-	return &GoogleTranslator{Client: client}
+func NewGoogle(client TranslateClient) contracts.Translator {
+	return &Google{Client: client}
 }
 
-func (t *GoogleTranslator) Translate(tq models.TranslationQuery) ([]string, error) {
+func (t *Google) Translate(tq models.TranslationQuery) ([]string, error) {
 	results, emptyResult := []string{}, []string{}
 
 	lang, err := language.Parse(tq.Target)
@@ -44,7 +44,7 @@ func (t *GoogleTranslator) Translate(tq models.TranslationQuery) ([]string, erro
 	return results, nil
 }
 
-func (t *GoogleTranslator) TranslateResources(targetLanguageCode string, resources []models.Resource) ([]models.Resource, error) {
+func (t *Google) TranslateResources(targetLanguageCode string, resources []models.Resource) ([]models.Resource, error) {
 	results, emptyResult := []models.Resource{}, []models.Resource{}
 	if len(resources) == 0 {
 		return emptyResult, nil
@@ -80,6 +80,6 @@ func (t *GoogleTranslator) TranslateResources(targetLanguageCode string, resourc
 	return results, nil
 }
 
-func (f *GoogleTranslator) GetBatchLimit() int {
+func (f *Google) GetBatchLimit() int {
 	return 100 // the actual limit is 128
 }

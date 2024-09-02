@@ -27,7 +27,7 @@ var _ TranslateClient = (*translateClientStub)(nil)
 
 func TestTranslate_ShouldReturnTranslatedResults(t *testing.T) {
 	mockGoogleClient := translateClientStub{}
-	translator := NewGoogleTranslator(&mockGoogleClient)
+	translator := NewGoogle(&mockGoogleClient)
 	input := models.TranslationQuery{Target: "fi", Q: []string{"text 1", "text 2", "text 3"}}
 
 	results, err := translator.Translate(input)
@@ -43,7 +43,7 @@ func TestTranslate_ShouldReturnTranslatedResults(t *testing.T) {
 func TestTranslateResources_ShouldReturnResourcesWithTranslatedText(t *testing.T) {
 	expectedLanguageCode, substringFromMock := "fi", "translated text"
 	mockGoogleClient := translateClientStub{}
-	translator := NewGoogleTranslator(&mockGoogleClient)
+	translator := NewGoogle(&mockGoogleClient)
 	inputs := []models.Resource{
 		{Key: "key1", LanguageCode: "en", Text: "text 1"},
 		{Key: "key2", LanguageCode: "en", Text: "text 2"},
