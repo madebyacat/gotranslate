@@ -4,8 +4,8 @@ import (
 	"gotranslate/core/repository"
 	"gotranslate/core/translators"
 	"gotranslate/models"
+	"gotranslate/slices"
 	"gotranslate/testutils"
-	"gotranslate/utils"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -34,6 +34,6 @@ func TestConsumeTranslation_ShouldSaveTranslatedResourcesToDb(t *testing.T) {
 	results, err := repo.GetResourcesByLanguageCode("es")
 	assert.NoError(t, err)
 	assert.Len(t, results, 3)
-	allResultsAreEs := utils.All(results, func(x models.Resource) bool { return x.LanguageCode == expectedLanguage })
+	allResultsAreEs := slices.All(results, func(x models.Resource) bool { return x.LanguageCode == expectedLanguage })
 	assert.Truef(t, allResultsAreEs, "expected all results to have target language %v", expectedLanguage)
 }

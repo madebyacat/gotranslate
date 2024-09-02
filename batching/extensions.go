@@ -1,22 +1,4 @@
-package utils
-
-func Contains[T any](slice []T, predicate func(T) bool) bool {
-	for _, item := range slice {
-		if predicate(item) {
-			return true
-		}
-	}
-	return false
-}
-
-func All[T any](slice []T, predicate func(T) bool) bool {
-	for _, item := range slice {
-		if !predicate(item) {
-			return false
-		}
-	}
-	return true
-}
+package batching
 
 func SplitToBatches[T any](input []T, batchSize int) [][]T {
 	var batches [][]T

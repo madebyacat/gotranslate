@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"gotranslate/batching"
 	"gotranslate/core/contracts"
 	"gotranslate/models"
-	"gotranslate/utils"
 	"log"
 )
 
@@ -62,7 +62,7 @@ func ConsumeTranslation(msg *TranslateLanguageMessage, repo contracts.ResoureRep
 	}
 
 	var newResources []models.Resource
-	batches := utils.SplitToBatches(existingResources, translator.GetBatchLimit())
+	batches := batching.SplitToBatches(existingResources, translator.GetBatchLimit())
 	for _, batch := range batches {
 		newResources, err = translator.TranslateResources(msg.TargetLanguage, batch)
 		if err != nil {

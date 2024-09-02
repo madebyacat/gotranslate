@@ -5,7 +5,7 @@ import (
 	"gotranslate/core/contracts"
 	"gotranslate/core/messages"
 	"gotranslate/models"
-	"gotranslate/utils"
+	"gotranslate/slices"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -55,10 +55,10 @@ func TranslateAllToNewLanguage(repo contracts.ResoureRepository, translator cont
 			return
 		}
 
-		if utils.Contains(existingLanguages, func(item models.LanguageResult) bool { return item.LanguageCode == targetLanguage }) {
+		if slices.Contains(existingLanguages, func(item models.LanguageResult) bool { return item.LanguageCode == targetLanguage }) {
 			badRequest(ctx, "target language already exists")
 			return
-		} else if !utils.Contains(existingLanguages, func(item models.LanguageResult) bool { return item.LanguageCode == sourceLanguage }) {
+		} else if !slices.Contains(existingLanguages, func(item models.LanguageResult) bool { return item.LanguageCode == sourceLanguage }) {
 			badRequest(ctx, "source language doesn't exist")
 			return
 		}

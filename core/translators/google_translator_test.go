@@ -3,7 +3,7 @@ package translators
 import (
 	"context"
 	"gotranslate/models"
-	"gotranslate/utils"
+	"gotranslate/slices"
 	"testing"
 
 	"cloud.google.com/go/translate"
@@ -55,13 +55,13 @@ func TestTranslateResources_ShouldReturnResourcesWithTranslatedText(t *testing.T
 	assert.NoError(t, err)
 	assert.NotEmpty(t, results)
 
-	assert.True(t, utils.All(results, func(r models.Resource) bool { return r.LanguageCode == expectedLanguageCode }), "all results should have expected LanguageCode")
+	assert.True(t, slices.All(results, func(r models.Resource) bool { return r.LanguageCode == expectedLanguageCode }), "all results should have expected LanguageCode")
 	for _, translatedResource := range results {
 		assert.NotEmpty(t, translatedResource.Text)
 		assert.Equal(t, expectedLanguageCode, translatedResource.LanguageCode)
 		assert.Contains(t, translatedResource.Text, substringFromMock)
 		assert.True(t,
-			utils.Contains(inputs, func(r models.Resource) bool { return r.Key == translatedResource.Key }),
+			slices.Contains(inputs, func(r models.Resource) bool { return r.Key == translatedResource.Key }),
 			"translated resource's Key should be in input data")
 		assert.Equal(t, translatedResource.LanguageCode, expectedLanguageCode)
 	}
