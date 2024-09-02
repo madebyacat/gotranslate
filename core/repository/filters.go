@@ -1,4 +1,4 @@
-package persistence
+package repository
 
 type resourceFilter struct {
 	Key          string

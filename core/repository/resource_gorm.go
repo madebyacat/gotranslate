@@ -1,4 +1,4 @@
-package persistence
+package repository
 
 import (
 	"fmt"
@@ -8,22 +8,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type ResourceRepositoryGorm struct {
+type ResourceGorm struct {
 	DB *gorm.DB
 }
 
-func NewResourceRepositoryGorm(db *gorm.DB) *ResourceRepositoryGorm {
-	return &ResourceRepositoryGorm{DB: db}
+func NewResourceGorm(db *gorm.DB) *ResourceGorm {
+	return &ResourceGorm{DB: db}
 }
 
-var _ contracts.ResoureRepository = (*ResourceRepositoryGorm)(nil)
+var _ contracts.ResoureRepository = (*ResourceGorm)(nil)
 
-func (repo *ResourceRepositoryGorm) Init() error {
+func (repo *ResourceGorm) Init() error {
 	repo.DB.AutoMigrate(&models.Resource{})
 	return nil
 }
 
-func (repo *ResourceRepositoryGorm) AddResources(resources ...models.Resource) error {
+func (repo *ResourceGorm) AddResources(resources ...models.Resource) error {
 	result := repo.DB.CreateInBatches(resources, 10)
 	if result.Error != nil {
 		return result.Error
@@ -32,7 +32,7 @@ func (repo *ResourceRepositoryGorm) AddResources(resources ...models.Resource) e
 	return nil
 }
 
-func (repo *ResourceRepositoryGorm) GetResourcesByKey(key string) ([]models.Resource, error) {
+func (repo *ResourceGorm) GetResourcesByKey(key string) ([]models.Resource, error) {
 	var resources []models.Resource
 	result := repo.DB.Where("Key = ?", key).Find(&resources)
 	if result.Error != nil {
@@ -42,7 +42,7 @@ func (repo *ResourceRepositoryGorm) GetResourcesByKey(key string) ([]models.Reso
 	return resources, nil
 }
 
-func (repo *ResourceRepositoryGorm) GetResourcesByLanguageCode(languageCode string) ([]models.Resource, error) {
+func (repo *ResourceGorm) GetResourcesByLanguageCode(languageCode string) ([]models.Resource, error) {
 	var resources []models.Resource
 	result := repo.DB.Where("LanguageCode = ?", languageCode).Find(&resources)
 	if result.Error != nil {
@@ -52,7 +52,7 @@ func (repo *ResourceRepositoryGorm) GetResourcesByLanguageCode(languageCode stri
 	return resources, nil
 }
 
-func (repo *ResourceRepositoryGorm) RemoveResources(key string, languageCode string) (rowsAffected int64, err error) {
+func (repo *ResourceGorm) RemoveResources(key string, languageCode string) (rowsAffected int64, err error) {
 	result := repo.DB.Where("Key = ? AND LanguageCode = ?", key, languageCode).Delete(&models.Resource{})
 	if result.Error != nil {
 		return 0, result.Error
@@ -61,7 +61,7 @@ func (repo *ResourceRepositoryGorm) RemoveResources(key string, languageCode str
 	return result.RowsAffected, nil
 }
 
-func (repo *ResourceRepositoryGorm) UpdateResourceValues(resources ...models.Resource) (rowsAffected int64, err error) {
+func (repo *ResourceGorm) UpdateResourceValues(resources ...models.Resource) (rowsAffected int64, err error) {
 	rowsAffected = 0
 	for _, resource := range resources {
 		result := repo.DB.Model(&models.Resource{}).
@@ -76,7 +76,7 @@ func (repo *ResourceRepositoryGorm) UpdateResourceValues(resources ...models.Res
 	return rowsAffected, nil
 }
 
-func (repo *ResourceRepositoryGorm) ExistingLanguageCodes() (results []models.LanguageResult, err error) {
+func (repo *ResourceGorm) ExistingLanguageCodes() (results []models.LanguageResult, err error) {
 	queryResult := repo.DB.
 		Model(&models.Resource{}).
 		Select(`languagecode as "LanguageCode", COUNT(*) as "Count"`).

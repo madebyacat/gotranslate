@@ -1,7 +1,7 @@
 package messages
 
 import (
-	"gotranslate/core/persistence"
+	"gotranslate/core/repository"
 	"gotranslate/core/translators"
 	"gotranslate/models"
 	"gotranslate/testutils"
@@ -25,7 +25,7 @@ func TestConsumeTranslation_ShouldSaveTranslatedResourcesToDb(t *testing.T) {
 	translator := translators.FakeTranslator{}
 	db, teardown := testutils.SpinUpContainer(t)
 	defer teardown()
-	repo := persistence.NewResourceRepositoryGorm(db)
+	repo := repository.NewResourceGorm(db)
 	repo.Init()
 	db.Create(data)
 

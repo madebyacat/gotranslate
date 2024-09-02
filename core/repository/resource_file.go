@@ -1,4 +1,4 @@
-package persistence
+package repository
 
 import (
 	"bufio"
@@ -12,22 +12,22 @@ import (
 )
 
 // This implementation was mostly to experiment
-type ResourceRepositoryFile struct {
+type ResourceFile struct {
 	File string
 	Mu   sync.Mutex
 }
 
-var _ contracts.ResoureRepository = (*ResourceRepositoryFile)(nil)
+var _ contracts.ResoureRepository = (*ResourceFile)(nil)
 
-func NewResourceRepositoryFile(file string) *ResourceRepositoryFile {
-	return &ResourceRepositoryFile{
+func NewResourceFile(file string) *ResourceFile {
+	return &ResourceFile{
 		File: file,
 		Mu:   sync.Mutex{},
 	}
 }
 
 // creates file if it doesn't exist, panics if it can't create it
-func (repo *ResourceRepositoryFile) Init() error {
+func (repo *ResourceFile) Init() error {
 	if _, err := os.Stat(repo.File); os.IsNotExist(err) {
 		fmt.Printf("File '%v' does not exist, creating", repo.File)
 		file, err := os.Create(repo.File)
@@ -44,15 +44,15 @@ func (repo *ResourceRepositoryFile) Init() error {
 	return nil
 }
 
-func (repo *ResourceRepositoryFile) GetResourcesByLanguageCode(languageCode string) ([]models.Resource, error) {
+func (repo *ResourceFile) GetResourcesByLanguageCode(languageCode string) ([]models.Resource, error) {
 	return repo.getResources([]resourceFilter{{LanguageCode: languageCode}})
 }
 
-func (repo *ResourceRepositoryFile) GetResourcesByKey(key string) ([]models.Resource, error) {
+func (repo *ResourceFile) GetResourcesByKey(key string) ([]models.Resource, error) {
 	return repo.getResources([]resourceFilter{{Key: key}})
 }
 
-func (repo *ResourceRepositoryFile) AddResources(resources ...models.Resource) error {
+func (repo *ResourceFile) AddResources(resources ...models.Resource) error {
 	if len(resources) == 0 {
 		return errors.New("no resources to add")
 	}
@@ -94,15 +94,15 @@ func (repo *ResourceRepositoryFile) AddResources(resources ...models.Resource) e
 	return nil
 }
 
-func (repo *ResourceRepositoryFile) UpdateResourceValues(resources ...models.Resource) (rowsAffected int64, err error) {
+func (repo *ResourceFile) UpdateResourceValues(resources ...models.Resource) (rowsAffected int64, err error) {
 	return 0, errors.New("not implemented")
 }
 
-func (repo *ResourceRepositoryFile) RemoveResources(key, languageCode string) (rowsAffected int64, err error) {
+func (repo *ResourceFile) RemoveResources(key, languageCode string) (rowsAffected int64, err error) {
 	return 0, errors.New("notimplemented")
 }
 
-func (repo *ResourceRepositoryFile) getResources(filters resourceFilters) ([]models.Resource, error) {
+func (repo *ResourceFile) getResources(filters resourceFilters) ([]models.Resource, error) {
 	repo.Mu.Lock()
 	defer repo.Mu.Unlock()
 	var results []models.Resource = []models.Resource{}
@@ -134,7 +134,7 @@ func (repo *ResourceRepositoryFile) getResources(filters resourceFilters) ([]mod
 	return results, nil
 }
 
-func (repo *ResourceRepositoryFile) ExistingLanguageCodes() (results []models.LanguageResult, err error) {
+func (repo *ResourceFile) ExistingLanguageCodes() (results []models.LanguageResult, err error) {
 	panic("unimplemented")
 }
 

@@ -1,4 +1,4 @@
-package persistence
+package repository
 
 import (
 	"encoding/json"
@@ -105,7 +105,7 @@ func TestAddResourcesFile(t *testing.T) {
 	cleanup()
 }
 
-func createTestfileWithData(withFixedData bool, data []models.Resource) (repo *ResourceRepositoryFile, cleanup func(), err error) {
+func createTestfileWithData(withFixedData bool, data []models.Resource) (repo *ResourceFile, cleanup func(), err error) {
 	if withFixedData {
 		fixedData := []models.Resource{
 			{Key: "aa", LanguageCode: "en", Text: "val1"},
@@ -116,7 +116,7 @@ func createTestfileWithData(withFixedData bool, data []models.Resource) (repo *R
 		}
 		data = append(data, fixedData...)
 	}
-	repo = &ResourceRepositoryFile{File: "test.txt", Mu: sync.Mutex{}}
+	repo = &ResourceFile{File: "test.txt", Mu: sync.Mutex{}}
 
 	file, err := os.Create(repo.File)
 	if err != nil {

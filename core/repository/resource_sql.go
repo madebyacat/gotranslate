@@ -1,4 +1,4 @@
-package persistence
+package repository
 
 import (
 	"context"
@@ -13,17 +13,17 @@ import (
 )
 
 // This implementation was mostly to experiment
-type ResourceRepositorySql struct {
+type ResourceSql struct {
 	Pool *pgxpool.Pool
 }
 
-func NewResourceRepositorySql(pool *pgxpool.Pool) *ResourceRepositorySql {
-	return &ResourceRepositorySql{Pool: pool}
+func NewResourceSql(pool *pgxpool.Pool) *ResourceSql {
+	return &ResourceSql{Pool: pool}
 }
 
-var _ contracts.ResoureRepository = (*ResourceRepositorySql)(nil)
+var _ contracts.ResoureRepository = (*ResourceSql)(nil)
 
-func (repo *ResourceRepositorySql) Init() error {
+func (repo *ResourceSql) Init() error {
 	createTableQuery := `
 		CREATE TABLE IF NOT EXISTS resources (
 			Key TEXT NOT NULL,
@@ -41,15 +41,15 @@ func (repo *ResourceRepositorySql) Init() error {
 	return nil
 }
 
-func (repo *ResourceRepositorySql) GetResourcesByLanguageCode(languageCode string) ([]models.Resource, error) {
+func (repo *ResourceSql) GetResourcesByLanguageCode(languageCode string) ([]models.Resource, error) {
 	return repo.getResources(resourceFilter{LanguageCode: languageCode})
 }
 
-func (repo *ResourceRepositorySql) GetResourcesByKey(key string) ([]models.Resource, error) {
+func (repo *ResourceSql) GetResourcesByKey(key string) ([]models.Resource, error) {
 	return repo.getResources(resourceFilter{Key: key})
 }
 
-func (repo *ResourceRepositorySql) AddResources(resources ...models.Resource) error {
+func (repo *ResourceSql) AddResources(resources ...models.Resource) error {
 	sqlStatement := `INSERT INTO resources (Key, LanguageCode, Text) VALUES `
 	columns := 3
 	params := []interface{}{}
@@ -74,7 +74,7 @@ func (repo *ResourceRepositorySql) AddResources(resources ...models.Resource) er
 	return nil
 }
 
-func (repo *ResourceRepositorySql) UpdateResourceValues(resources ...models.Resource) (rowsAffected int64, err error) {
+func (repo *ResourceSql) UpdateResourceValues(resources ...models.Resource) (rowsAffected int64, err error) {
 	type sqlWithParams struct {
 		sqlStatement string
 		params       []interface{}
@@ -105,7 +105,7 @@ func (repo *ResourceRepositorySql) UpdateResourceValues(resources ...models.Reso
 	return rowsAffected, nil
 }
 
-func (repo *ResourceRepositorySql) RemoveResources(key, languageCode string) (rowsAffected int64, err error) {
+func (repo *ResourceSql) RemoveResources(key, languageCode string) (rowsAffected int64, err error) {
 	sqlStatement := "DELETE FROM resources WHERE Key = $1 AND LanguageCode = $2;"
 	cmd, err := repo.Pool.Exec(context.Background(), sqlStatement, key, languageCode)
 	if err != nil {
@@ -114,7 +114,7 @@ func (repo *ResourceRepositorySql) RemoveResources(key, languageCode string) (ro
 	return cmd.RowsAffected(), nil
 }
 
-func (repo *ResourceRepositorySql) ExistingLanguageCodes() (results []models.LanguageResult, err error) {
+func (repo *ResourceSql) ExistingLanguageCodes() (results []models.LanguageResult, err error) {
 	query := `SELECT languagecode as "LanguageCode", COUNT(*) as "Count" FROM resources GROUP BY languagecode`
 	rows, err := repo.Pool.Query(context.Background(), query)
 	if err != nil {
@@ -130,7 +130,7 @@ func (repo *ResourceRepositorySql) ExistingLanguageCodes() (results []models.Lan
 	return results, nil
 }
 
-func (repo *ResourceRepositorySql) getResources(filters ...resourceFilter) ([]models.Resource, error) {
+func (repo *ResourceSql) getResources(filters ...resourceFilter) ([]models.Resource, error) {
 	results, emptyResult := []models.Resource{}, []models.Resource{}
 
 	query, params, err := generateQueryAndParameters(filters...)

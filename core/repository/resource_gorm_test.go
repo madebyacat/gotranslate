@@ -1,4 +1,4 @@
-package persistence
+package repository
 
 import (
 	"gotranslate/models"
@@ -21,7 +21,7 @@ func TestGetResourcesByLanguageCode_ShouldGetCorrectResults(t *testing.T) {
 	languageCodeUnderTest, expectedResultsCount := "en", 3
 	db, teardown := testutils.SpinUpContainer(t)
 	defer teardown()
-	repo := NewResourceRepositoryGorm(db)
+	repo := NewResourceGorm(db)
 	repo.Init()
 	db.Create(&testData)
 
@@ -38,7 +38,7 @@ func TestGetResourcesByKey_ShouldGetCorrectResults(t *testing.T) {
 	keyUnderTest, expectedResultsCount := "key1", 3
 	db, teardown := testutils.SpinUpContainer(t)
 	defer teardown()
-	repo := NewResourceRepositoryGorm(db)
+	repo := NewResourceGorm(db)
 	repo.Init()
 	db.Create(&testData)
 
@@ -54,7 +54,7 @@ func TestGetResourcesByKey_ShouldGetCorrectResults(t *testing.T) {
 func TestExistingLanguageCodes_ShouldReturn3(t *testing.T) {
 	db, teardown := testutils.SpinUpContainer(t)
 	defer teardown()
-	repo := NewResourceRepositoryGorm(db)
+	repo := NewResourceGorm(db)
 	repo.Init()
 	db.Create(&testData)
 
@@ -74,7 +74,7 @@ func TestAddResources_WhenManyResources_ShouldSucceedAndResourceShouldBeWrittenI
 	}
 	db, teardown := testutils.SpinUpContainer(t)
 	defer teardown()
-	repo := NewResourceRepositoryGorm(db)
+	repo := NewResourceGorm(db)
 	repo.Init()
 
 	// act
@@ -98,7 +98,7 @@ func TestAddResources_When1Resource_ShouldSucceedAndResourceShouldBeWrittenInTab
 	}
 	db, teardown := testutils.SpinUpContainer(t)
 	defer teardown()
-	repo := NewResourceRepositoryGorm(db)
+	repo := NewResourceGorm(db)
 	repo.Init()
 
 	// act
@@ -120,7 +120,7 @@ func TestUpdateResourceValues_ShouldChangeText(t *testing.T) {
 	expectedText, expectedAffectedRows := "something else !", int64(1)
 	db, teardown := testutils.SpinUpContainer(t)
 	defer teardown()
-	repo := NewResourceRepositoryGorm(db)
+	repo := NewResourceGorm(db)
 	repo.Init()
 	db.Create(&testData)
 
@@ -145,7 +145,7 @@ func TestRemoveResources_WhenExistsInDb_ShouldBeDeleted(t *testing.T) {
 	keyUnderTest, languageCodeUnderTest, expectedAffectedRows := testData[0].Key, testData[0].LanguageCode, int64(1)
 	db, teardown := testutils.SpinUpContainer(t)
 	defer teardown()
-	repo := NewResourceRepositoryGorm(db)
+	repo := NewResourceGorm(db)
 	repo.Init()
 	db.Create(&testData)
 	fetchQuery := db.Model(&models.Resource{}).Where("Key = ? AND LanguageCode = ?", keyUnderTest, languageCodeUnderTest)

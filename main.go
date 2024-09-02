@@ -7,8 +7,8 @@ import (
 	"gotranslate/api/rest"
 	"gotranslate/core/contracts"
 	"gotranslate/core/messages"
-	"gotranslate/core/persistence"
 	"gotranslate/core/queue"
+	"gotranslate/core/repository"
 	"gotranslate/core/translators"
 	"gotranslate/models"
 	"log"
@@ -62,7 +62,7 @@ func initializeRepository() (repo contracts.ResoureRepository, cleanup func()) {
 	persistenceMedium := viper.GetString("persistence")
 	if persistenceMedium == "file" {
 		file := viper.GetString("file")
-		repo := persistence.NewResourceRepositoryFile(file)
+		repo := repository.NewResourceFile(file)
 
 		if err := repo.Init(); err != nil {
 			log.Fatal(err)
@@ -79,7 +79,7 @@ func initializeRepository() (repo contracts.ResoureRepository, cleanup func()) {
 			log.Fatal(err)
 		}
 
-		repo := persistence.NewResourceRepositorySql(pool)
+		repo := repository.NewResourceSql(pool)
 
 		if err := repo.Init(); err != nil {
 			log.Fatal(err)
@@ -92,7 +92,7 @@ func initializeRepository() (repo contracts.ResoureRepository, cleanup func()) {
 			log.Fatal(err)
 		}
 
-		repo := persistence.NewResourceRepositoryGorm(db)
+		repo := repository.NewResourceGorm(db)
 
 		if err := repo.Init(); err != nil {
 			log.Fatal(err)
