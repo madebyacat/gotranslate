@@ -53,7 +53,12 @@ func (repo *ResourceGorm) GetResourcesByLanguageCode(languageCode string) ([]mod
 }
 
 func (repo *ResourceGorm) RemoveResources(key string, languageCode string) (rowsAffected int64, err error) {
-	result := repo.DB.Where("Key = ? AND LanguageCode = ?", key, languageCode).Delete(&models.Resource{})
+	query := repo.DB.Where("Key = ?", key)
+	if languageCode != "" {
+		query = query.Where("LanguageCode = ?", languageCode)
+	}
+
+	result := query.Delete(&models.Resource{})
 	if result.Error != nil {
 		return 0, result.Error
 	}

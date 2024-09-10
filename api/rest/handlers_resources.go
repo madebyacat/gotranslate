@@ -85,8 +85,13 @@ func parseResourcesFromRequest(ctx *gin.Context) ([]models.Resource, error) {
 func DeleteResources(repo contracts.ResoureRepository) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		languageCode, key := ctx.Query("languagecode"), ctx.Query("key")
-		if !languageCodeIsValid(languageCode) || len(key) == 0 {
-			badRequest(ctx, "To delete a resource you need to provide a valid languageCode and key")
+		if len(languageCode) > 0 && !languageCodeIsValid(languageCode) {
+			badRequest(ctx, "LanguageCode is invalid")
+			return
+		}
+
+		if len(key) == 0 {
+			badRequest(ctx, "To delete a resource you need to provide a valid key")
 			return
 		}
 
